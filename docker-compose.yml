@@ -1,10 +1,20 @@
 version: '3.8'
 
 services:
-  physics-sim:
+  physicssim-console:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: physics-sim
-    container_name: physics-sim
+      dockerfile: PhysicsSim.Console/Dockerfile
+    image: physicssim-console
+    container_name: physicssim-console
+    restart: unless-stopped
+
+  physicssim-web:
+    build:
+      context: .
+      dockerfile: PhysicsSim.Web/Dockerfile
+    image: physicssim-web
+    container_name: physicssim-web
+    ports:
+      - "5001:8080"
     restart: unless-stopped
