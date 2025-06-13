@@ -33,7 +33,8 @@ jobs:
       - name: Build and Push Console Image
         uses: docker/build-push-action@v4
         with:
-          context: ./PhysicsSim.Console
+          context: .
+          file: PhysicsSim.Console/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/physics-sim-console:${{ env.TAG_NAME }}
