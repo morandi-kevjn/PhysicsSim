@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  physics-sim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: physics-sim
+    container_name: physics-sim
+    restart: unless-stopped
