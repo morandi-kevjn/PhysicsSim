@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Numerics;
 
-class Program
+partial class Program
 {
     static void Main()
     {
