@@ -1,52 +1,55 @@
 using System.Numerics;
 
-public class Particle
+namespace PhysicsSim.Core
 {
-    public Vector2 Position { get; set; }
-    public Vector2 Velocity { get; set; }
-
-    public Vector2 Acceleration { get; set; }
-
-    public float Mass { get; set; }
-
-    public Particle(Vector2 position, Vector2 velocity, float mass)
+    public class Particle
     {
-        Position = position;
-        Velocity = velocity;
-        Acceleration = Vector2.Zero;
-        Mass = mass;
-    }
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
 
-    public void ApplyForce(Vector2 force)
-    {
-        Acceleration += force / Mass;
-    }
+        public Vector2 Acceleration { get; set; }
 
-    public void Update(float deltaTime)
-    {
-        Velocity += Acceleration * deltaTime;
-        Position += Velocity * deltaTime;
-        Acceleration = Vector2.Zero; // Reset acceleration after each update
-    }
+        public float Mass { get; set; }
 
-    public void CheckBounds(float minX, float maxX, float minY, float maxY)
-    {
-        if (Position.X < minX || Position.X > maxX)
+        public Particle(Vector2 position, Vector2 velocity, float mass)
         {
-            Velocity = new Vector2(-Velocity.X, Velocity.Y); // Reflect velocity on X bounds
-            Position = new Vector2(
-                Math.Clamp(Position.X, minX, maxX),
-                Position.Y
-            );
+            Position = position;
+            Velocity = velocity;
+            Acceleration = Vector2.Zero;
+            Mass = mass;
         }
 
-        if (Position.Y < minY || Position.Y > maxY)
+        public void ApplyForce(Vector2 force)
         {
-            Velocity = new Vector2(Velocity.X, -Velocity.Y); // Reflect velocity on Y bounds
-            Position = new Vector2(
-                Position.X,
-                Math.Clamp(Position.Y, minY, maxY)
-            );
+            Acceleration += force / Mass;
+        }
+
+        public void Update(float deltaTime)
+        {
+            Velocity += Acceleration * deltaTime;
+            Position += Velocity * deltaTime;
+            Acceleration = Vector2.Zero; // Reset acceleration after each update
+        }
+
+        public void CheckBounds(float minX, float maxX, float minY, float maxY)
+        {
+            if (Position.X < minX || Position.X > maxX)
+            {
+                Velocity = new Vector2(-Velocity.X, Velocity.Y); // Reflect velocity on X bounds
+                Position = new Vector2(
+                    Math.Clamp(Position.X, minX, maxX),
+                    Position.Y
+                );
+            }
+
+            if (Position.Y < minY || Position.Y > maxY)
+            {
+                Velocity = new Vector2(Velocity.X, -Velocity.Y); // Reflect velocity on Y bounds
+                Position = new Vector2(
+                    Position.X,
+                    Math.Clamp(Position.Y, minY, maxY)
+                );
+            }
         }
     }
 }

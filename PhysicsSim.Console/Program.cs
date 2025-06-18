@@ -1,6 +1,8 @@
 ﻿using System.Net;
 using System.Numerics;
 
+using PhysicsSim.Core;
+
 partial class Program
 {
     static void Main()
@@ -23,7 +25,7 @@ partial class Program
                 particle.Update(timeStep);
                 particle.CheckBounds(-5, 5, -5, 5);
             }
-           
+
             Console.WriteLine($"Time: {i * timeStep:F2}s");
             foreach (var particle in particles)
             {

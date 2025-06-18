@@ -45,7 +45,8 @@ jobs:
       - name: Build and Push Web Image
         uses: docker/build-push-action@v4
         with:
-          context: ./PhysicsSim.Web
+          context: .
+          file: PhysicsSim.Web/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/physics-sim-web:${{ env.TAG_NAME }}
