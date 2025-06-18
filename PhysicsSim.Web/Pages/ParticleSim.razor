@@ -3,27 +3,38 @@
 @implements IDisposable
 
 @using PhysicsSim.Core;
+@using System.Numerics;
 
 <h3>Particle Simulation</h3>
 
 <canvas id="particleCanvas" width="800" height="400" style="border: 1px solid black;"></canvas>
 
 <div class="mt-3">
+    <label>Particle Count:</label>
+    <input type="number" min="1" max="1000" @bind="particleCount" style="width: 80px; margin-right: 10px;"/>
     <button @onclick="StartSimulation">Start</button>
-    <button @onclick="ResetSimulation">Reset</button>
+    <button @onclick="async() => await ResetSimulation()">Reset</button>
 </div>
 
 @code {
-    private List<ParticleDTO> particles = new ();
+    private List<Particle> particles = new ();
     private System.Timers.Timer? simulationTimer;
+    private readonly float canvasHeight = 800;
+    private readonly float canvasWidth = 400;
+    private int particleCount = 10;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        particles.Add(new ParticleDTO { X = 100, Y =200, VX = 30, VY = 0 });
+        await ResetSimulation();
     }
     private async Task UpdateCanvas()
     {
-        await JS.InvokeVoidAsync("particleSim.drawParticle", "particleCanvas", particles);
+        await JS.InvokeVoidAsync("particleSim.drawParticle", "particleCanvas", 
+            particles.Select(particle => new {
+                x = particle.Position.X,
+                y = canvasHeight - particle.Position.Y,
+            })
+        );
     }
 
     private void StartSimulation()
@@ -40,20 +51,28 @@
     private void UpdatePhysics()
     {
         float dt = 0.016f; // Time step in seconds (16 ms for ~60 FPS)
+        Vector2 gravity = new Vector2(0, -9.81f); // Gravity vector
         foreach (var particle in particles)
         {
-            particle.VY -= 9.81f * dt; // Gravity
-            particle.X += particle.VX * dt;
-            particle.Y += particle.VY * dt;
+            particle.ApplyForce(gravity * particle.Mass);
+            particle.Update(dt);
+            particle.CheckBounds(0, canvasWidth, 0, canvasHeight);
         }
     }
 
     private async Task ResetSimulation()
     {
         simulationTimer?.Stop();
-        particles = new List<ParticleDTO> {
-            new ParticleDTO { X = 100, Y = 200, VX = 30, VY = 0 }
-        };
+        var rand = new Random();
+
+        particles = Enumerable.Range(0, particleCount).Select(i =>
+            new Particle(
+                new Vector2(rand.Next(50, 750), rand.Next(50, 350)),
+                new Vector2((float)(rand.NextDouble() * 50 - 25), (float)(rand.NextDouble() * 50)),
+                1.0f
+            )
+        ).ToList();
+
         await UpdateCanvas();
     }
 
