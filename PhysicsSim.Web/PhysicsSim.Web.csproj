@@ -10,4 +10,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+ <!-- DEV Test
+ <ItemGroup>
+    <Content Include="..\PhysicsSim.Web\wwwroot\js\particle.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  --> 
+
 </Project>
