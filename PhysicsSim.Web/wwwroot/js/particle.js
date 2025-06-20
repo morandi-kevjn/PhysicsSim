@@ -1,16 +1,24 @@
 window.particleSim = {
-    drawParticle: function (canvasId, particleList) {
+    init: function (canvasId, width, height) {
         const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
+        canvas.width = width;
+        canvas.height = height;
 
         const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        window.particleSim.ctx = ctx;
+    },
+    drawParticle: function (canvasId, particleList) {
+        const canvas = document.getElementById(canvasId);
+        const ctx = canvas.getContext('2d');
+        if (!canvas) return;
 
-        particleList.forEach(particle => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "blue";
+
+        for (const particle of particleList) {
             ctx.beginPath();
-            ctx.arc(particle.x, canvas.height - particle.y, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = "blue";
+            createContext.arc(particle.x, particle.y || 5, 0, 2 * Math.PI);
             ctx.fill();
-        });
+        }
     }
 }

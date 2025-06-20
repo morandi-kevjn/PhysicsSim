@@ -19,20 +19,29 @@
 @code {
     private List<Particle> particles = new ();
     private System.Timers.Timer? simulationTimer;
-    private readonly float canvasHeight = 800;
-    private readonly float canvasWidth = 400;
+    private readonly float canvasHeight = 400;
+    private readonly float canvasWidth = 800;
     private int particleCount = 10;
 
-    protected override async Task OnInitializedAsync()
+    private bool _hasRendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await ResetSimulation();
+        if (firstRender && !_hasRendered)
+        {
+            await JS.InvokeVoidAsync("particleSim.init", "particleCanvas", canvasWidth, canvasHeight);
+            _hasRendered = true;
+            await ResetSimulation();
+        }
     }
+
     private async Task UpdateCanvas()
     {
         await JS.InvokeVoidAsync("particleSim.drawParticle", "particleCanvas", 
             particles.Select(particle => new {
                 x = particle.Position.X,
                 y = canvasHeight - particle.Position.Y,
+                radius = particle.Radius,
             })
         );
     }
